@@ -4,6 +4,7 @@ namespace App\Helpers;
 
 use App\Enums\TicketType;
 use App\Models\SupportTicket;
+use Exception;
 use Prism\Prism\Enums\Provider;
 use Prism\Prism\Prism;
 use Prism\Prism\Text\PendingRequest;
@@ -15,9 +16,14 @@ class TicketTypeHelper
     {
         $systemPrompt = self::systemPrompt();
         try {
-            $response = self::request()
-                ->withSystemPrompt($systemPrompt)
-                ->withPrompt($ticket->toJson())->asText()->text;
+            $response = retry(3, function () use ($systemPrompt, $ticket) {
+                return self::request()
+                    ->withSystemPrompt($systemPrompt)
+                    ->withPrompt($ticket->toJson())->asText()->text;
+            }, 15000);
+            if (!$response) {
+                throw new Exception('Error while calling llm request.');
+            }
             $ticket->llmResponses()->create([
                 'request' => json_encode([
                     'system_prompt' => $systemPrompt,
