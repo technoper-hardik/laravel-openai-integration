@@ -13,18 +13,34 @@ class TicketTypeHelper
 {
     public static function getTicketType(SupportTicket $ticket): ?TicketType
     {
+        $systemPrompt = self::systemPrompt();
         try {
-            return TicketType::from(self::request()->withPrompt($ticket->toJson())->asText()->text);
-        } catch (Throwable) {
+            $response = self::request()
+                ->withSystemPrompt($systemPrompt)
+                ->withPrompt($ticket->toJson())->asText()->text;
+            $ticket->llmResponses()->create([
+                'request' => json_encode([
+                    'system_prompt' => $systemPrompt,
+                    'message' => $ticket,
+                ]),
+                'response' => $response,
+            ]);
+            return TicketType::from($response);
+        } catch (Throwable $throwable) {
+            $ticket->llmResponses()->create([
+                'request' => json_encode([
+                    'system_prompt' => $systemPrompt,
+                    'message' => $ticket,
+                ]),
+                'response' => $throwable->getMessage(),
+            ]);
             return null;
         }
     }
 
     private static function request(): PendingRequest
     {
-        return Prism::text()
-            ->using(Provider::OpenAI, 'gpt-4o-2024-08-06')
-            ->withSystemPrompt(static::systemPrompt());
+        return Prism::text()->using(Provider::OpenAI, 'gpt-4o-2024-08-06');
     }
 
     private static function systemPrompt(): string

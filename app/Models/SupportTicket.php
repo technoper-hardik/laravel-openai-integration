@@ -5,6 +5,7 @@ namespace App\Models;
 use App\Enums\TicketType;
 use App\Enums\TypeStatus;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 
 class SupportTicket extends Model
 {
@@ -19,4 +20,9 @@ class SupportTicket extends Model
         'type' => TicketType::class,
         'type_status' => TypeStatus::class,
     ];
+
+    public function llmResponses(): HasMany
+    {
+        return $this->hasMany(LLMResponse::class);
+    }
 }
