@@ -14,8 +14,10 @@ return new class extends Migration {
             $table->id();
             $table->string('name');
             $table->text('message');
-            $table->enum('type', collect(\App\Enums\TicketType::cases())->pluck('value')->toArray());
-            $table->enum('type_status', collect(\App\Enums\TypeStatus::cases())->pluck('value')->toArray());
+            $table->enum('type', collect(\App\Enums\TicketType::cases())->pluck('value')->toArray())
+                ->nullable();
+            $table->enum('type_status', collect(\App\Enums\TypeStatus::cases())->pluck('value')->toArray())
+                ->default(\App\Enums\TypeStatus::PENDING->value);
             $table->timestamps();
         });
     }
