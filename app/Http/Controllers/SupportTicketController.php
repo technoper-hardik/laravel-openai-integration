@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Enums\TypeStatus;
 use App\Http\Requests\StoreSupportTicketRequest;
 use App\Jobs\ProcessTicketTypeStatus;
 use App\Models\SupportTicket;
@@ -21,7 +22,11 @@ class SupportTicketController extends Controller
 
     public function store(StoreSupportTicketRequest $request): JsonResponse
     {
-        $ticket = SupportTicket::query()->create($request->validated());
+        $ticket = SupportTicket::query()->create([
+            ...$request->validated(),
+            'type' => null,
+            'type_status' => TypeStatus::PENDING->value,
+        ]);
         ProcessTicketTypeStatus::dispatch($ticket);
         return response()->json($ticket);
     }
