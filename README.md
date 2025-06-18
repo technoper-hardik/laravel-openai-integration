@@ -7,6 +7,11 @@ The goal is to showcase Laravel backend capabilities along with AI-powered autom
 It includes a working UI and a RESTful API to create and view support tickets that are automatically categorized by the
 LLM.
 
+## 🎥 Loom Demo Video
+
+[![Watch the video](https://cdn.loom.com/sessions/thumbnails/b97596f6f3014f1e94eb86eca841bae0-796be1663dd937c9-full-play.gif)](https://www.loom.com/share/b97596f6f3014f1e94eb86eca841bae0?sid=02fbedc9-fb78-4ea0-a5c9-66685ae887d7)
+
+
 ---
 
 ## 🔧 Tech Stack
