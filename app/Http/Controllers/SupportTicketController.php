@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Http\Requests\StoreSupportTicketRequest;
+use App\Jobs\ProcessTicketTypeStatus;
 use App\Models\SupportTicket;
 use Illuminate\Http\JsonResponse;
 
@@ -21,6 +22,7 @@ class SupportTicketController extends Controller
     public function store(StoreSupportTicketRequest $request): JsonResponse
     {
         $ticket = SupportTicket::query()->create($request->validated());
+        ProcessTicketTypeStatus::dispatch($ticket);
         return response()->json($ticket);
     }
 }
