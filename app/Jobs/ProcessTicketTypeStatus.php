@@ -26,14 +26,14 @@ class ProcessTicketTypeStatus implements ShouldQueue
     public function handle(): void
     {
         // Added extra sleep to understand status changes
-        sleep(10);
+        sleep(5);
 
         $this->ticket->update([
             'type_status' => TypeStatus::PROCESSING->value
         ]);
 
         // Added extra sleep to understand status changes
-        sleep(10);
+        sleep(5);
 
         try {
             $type = TicketTypeHelper::getTicketType($this->ticket);
